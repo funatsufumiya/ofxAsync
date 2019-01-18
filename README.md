@@ -39,4 +39,11 @@ int thread_id = ofxAsync::run([&](ofThread* thread){
 ofLog() << "task started";
 ofSleepMillis(3000);
 ofxAsync::stop(thread_id); // Cancel task after 3 seconds
+
+// LOG:
+[notice ] task started
+[notice ] processing 1 / 10
+[notice ] processing 2 / 10
+[notice ] processing 3 / 10
+[notice ] task cancelled
 ```
