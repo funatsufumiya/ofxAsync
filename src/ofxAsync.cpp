@@ -2,9 +2,10 @@
 
 std::map<int, shared_ptr<ofThread> > ofxAsync::runners = {};
 ofxAsync::AsyncExit ofxAsync::asyncExit = ofxAsync::AsyncExit();
+int ofxAsync::thread_id_max = 0;
 
 int ofxAsync::run(std::function<void()> func){
-    int runner_id = runners.size();
+    int runner_id = ++thread_id_max;
     auto runner = make_shared<AsyncRunner>();
     runners[runner_id] = runner;
     runner->setup(func);
@@ -14,7 +15,7 @@ int ofxAsync::run(std::function<void()> func){
 }
 
 int ofxAsync::run(std::function<void(ofThread*)> func){
-    int runner_id = runners.size();
+    int runner_id = ++thread_id_max;
     auto runner = make_shared<AsyncRunnerWithArg>();
     runners[runner_id] = runner;
     runner->setup(func);

@@ -40,6 +40,7 @@ private:
     
     static std::map<int, shared_ptr<ofThread> > runners;
     static AsyncExit asyncExit;
+    static int thread_id_max;
     
 public:
     static int run(std::function<void()> func);
