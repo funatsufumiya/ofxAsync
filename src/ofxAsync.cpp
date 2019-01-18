@@ -1,13 +1,22 @@
 #include "ofxAsync.h"
 
-std::map<int, shared_ptr<ofxAsync::AsyncRunner> > ofxAsync::runners = {};
+std::map<int, shared_ptr<ofThread> > ofxAsync::runners = {};
 ofxAsync::AsyncExit ofxAsync::asyncExit = ofxAsync::AsyncExit();
 
 int ofxAsync::run(std::function<void()> func){
     int runner_id = runners.size();
-    runners[runner_id] = make_shared<AsyncRunner>();
+    auto runner = make_shared<AsyncRunner>();
+    runners[runner_id] = runner;
+    runner->setup(func);
+    runner->startThread();
     
-    auto& runner = runners[runner_id];
+    return runner_id;
+}
+
+int ofxAsync::run(std::function<void(ofThread*)> func){
+    int runner_id = runners.size();
+    auto runner = make_shared<AsyncRunnerWithArg>();
+    runners[runner_id] = runner;
     runner->setup(func);
     runner->startThread();
     
@@ -25,26 +34,37 @@ void ofxAsync::update(){
     }
 }
 
-void ofxAsync::stop(int thread_id){
-    
+void ofxAsync::stop(int thread_id, bool wait_until_stop){
+    if(runners.count(thread_id) > 0 && runners[thread_id]->isThreadRunning()){
+        auto e = runners[thread_id];
+        e->stopThread();
+        if(wait_until_stop){
+            e->waitForThread(false);
+        }
+    }
 }
 
-void ofxAsync::stopAll(){
+void ofxAsync::stopAll(bool wait_until_stop){
     for(auto it = runners.begin(); it != runners.end(); ++it) {
         auto& key = it->first;
         auto e = runners[key];
         if(e->isThreadRunning()){
             e->stopThread();
-            e->waitForThread(false);
+            
+            if(wait_until_stop){
+                e->waitForThread(false);
+            }
         }
     }
     
-    while(true){
-        if( runners.size() == 0 ){
-            break;
-        }else{
-            auto& key = runners.begin()->first;
-            runners.erase(key);
+    if(wait_until_stop){
+        while(true){
+            if( runners.size() == 0 ){
+                break;
+            }else{
+                auto& key = runners.begin()->first;
+                runners.erase(key);
+            }
         }
     }
 }
