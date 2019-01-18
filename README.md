@@ -16,7 +16,7 @@ ofxAsync::run([&](){
 
 ofLog() << "task started. waiting...";
 
-// LOG:
+// == logs ======
 // [notice ] task started. waiting...
 // [notice ] done!
 ```
@@ -46,7 +46,7 @@ ofLog() << "task started";
 ofSleepMillis(3000);
 ofxAsync::stop(thread_id); // Cancel task after 3 seconds
 
-// LOG:
+// == logs ======
 // [notice ] task started
 // [notice ] processing 1 / 10
 // [notice ] processing 2 / 10
