@@ -14,10 +14,10 @@ ofxAsync::run([&](){
     ofLog() << "done!";
 });
 
-ofLog() << "task started. waiting...";
+ofLog() << "task started.";
 
 // == logs ======
-// [notice ] task started. waiting...
+// [notice ] task started.
 // [notice ] done!
 ```
 
