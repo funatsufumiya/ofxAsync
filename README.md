@@ -28,6 +28,7 @@ int thread_id = ofxAsync::run([&](ofThread* thread){
 
         // cancell tasks when not running
         if(!thread->isThreadRunning()){
+            ofLog() << "task cancelled";
             return;
         }
     }
@@ -35,6 +36,7 @@ int thread_id = ofxAsync::run([&](ofThread* thread){
     ofLog() << "done!";
 });
 
+ofLog() << "task started";
 ofSleepMillis(3000);
-ofxAsync::stop(thread_id);
+ofxAsync::stop(thread_id); // Cancel task after 3 seconds
 ```
