@@ -23,7 +23,7 @@ You can also take `ofThread*` as an arg:
 int thread_id = ofxAsync::run([&](ofThread* thread){
     for(int i=0; i<10; ++i){
 
-        ofLog() << "processing " << i << " / 10";
+        ofLog() << "processing " << (i+1) << " / 10";
         ofSleepMillis(1000);
 
         // cancell tasks when not running
@@ -31,6 +31,8 @@ int thread_id = ofxAsync::run([&](ofThread* thread){
             return;
         }
     }
+
+    ofLog() << "done!";
 });
 
 ofSleepMillis(3000);
