@@ -53,3 +53,25 @@ ofxAsync::stop(thread_id); // Cancel task after 3 seconds
 // [notice ] processing 3 / 10
 // [notice ] task cancelled
 ```
+
+You can also pass parameters:
+
+```
+for(int i=0; i<20; ++i){
+    ofxAsync::run([i](){ // <- capture variable i by copy
+        ofSleepMillis(ofRandom(100,300));
+        ofLog() << "thread No." << i;
+    });
+}
+
+// == logs ======
+// [notice ] thread No.9
+// [notice ] thread No.13
+// [notice ] thread No.7
+// [notice ] thread No.11
+// ...
+// [notice ] thread No.15
+// [notice ] thread No.3
+```
+
+( NOTE: about *capture*, please read [this](https://en.cppreference.com/w/cpp/language/lambda) or other pages )
