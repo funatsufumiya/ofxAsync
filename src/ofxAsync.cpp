@@ -10,7 +10,6 @@ int ofxAsync::run(std::function<void()> func){
     runners[runner_id] = runner;
     runner->setup(func);
     runner->startThread();
-    
     return runner_id;
 }
 
@@ -20,7 +19,26 @@ int ofxAsync::run(std::function<void(ofThread*)> func){
     runners[runner_id] = runner;
     runner->setup(func);
     runner->startThread();
-    
+    return runner_id;
+}
+
+template<typename T>
+int ofxAsync::run(std::function<void(T, ofThread*)> func){
+    int runner_id = ++thread_id_max;
+    auto runner = make_shared<AsyncRunnerWithArgAndParam<T>>();
+    runners[runner_id] = runner;
+    runner->setup(func);
+    runner->startThread();
+    return runner_id;
+}
+
+template<typename T>
+int ofxAsync::run(std::function<void(T, ofThread*)> func, T&& parameter){
+    int runner_id = ++thread_id_max;
+    auto runner = make_shared<AsyncRunnerWithArgAndParam<T>>();
+    runners[runner_id] = runner;
+    runner->setup(func, parameter);
+    runner->startThread();
     return runner_id;
 }
 
@@ -41,6 +59,21 @@ bool ofxAsync::exists(int thread_id){
 
 bool ofxAsync::isRunning(int thread_id){
     return runners.count(thread_id) > 0 && runners[thread_id]->isThreadRunning();
+}
+
+template<typename T>
+boost::optional<const T&> ofxAsync::getParameter(int thread_id){
+    if(runners.count(thread_id) > 0 && runners[thread_id]->isThreadRunning()){
+        auto e = runners[thread_id];
+        auto runner = dynamic_pointer_cast<AsyncRunnerWithArgAndParam<T>>(e);
+        if(runner == nullptr){
+            return boost::none;
+        }else{
+            return runner->param;
+        }
+    }else{
+        return boost::none;
+    }
 }
 
 void ofxAsync::stop(int thread_id, bool wait_until_stop){
