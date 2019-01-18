@@ -2,6 +2,8 @@
 
 #include "ofMain.h"
 
+#include "boost/optional.hpp"
+
 class ofxAsync {
 private:
     class AsyncExit {
@@ -50,4 +52,7 @@ public:
     static bool isRunning(int thread_id);
     static void stop(int thread_id, bool wait_until_stop=true);
     static void stopAll(bool wait_until_stop=true);
+    static void waitFor(int thread_id);
+    static void waitForAll();
+    static boost::optional<shared_ptr<ofThread>> getThread(int thread_id);
 };

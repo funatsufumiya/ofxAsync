@@ -77,3 +77,30 @@ void ofxAsync::stopAll(bool wait_until_stop){
         }
     }
 }
+
+void ofxAsync::waitFor(int thread_id){
+    if(runners.count(thread_id) > 0 && runners[thread_id]->isThreadRunning()){
+        auto e = runners[thread_id];
+        e->waitForThread(false);
+    }
+}
+
+void ofxAsync::waitForAll(){
+    for(auto it = runners.begin(); it != runners.end(); ++it) {
+        auto& key = it->first;
+        auto e = runners[key];
+        if(e->isThreadRunning()){
+            e->waitForThread(false);
+        }
+    }
+}
+
+boost::optional<shared_ptr<ofThread>> ofxAsync::getThread(int thread_id){
+    if(runners.count(thread_id) > 0 && runners[thread_id]->isThreadRunning()){
+        auto e = runners[thread_id];
+        return e;
+    }else{
+        return boost::none;
+    }
+}
+
