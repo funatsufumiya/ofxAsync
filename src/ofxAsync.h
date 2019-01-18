@@ -43,20 +43,20 @@ private:
     template<typename T>
     class AsyncRunnerWithArgAndParam: public ofThread {
     public:
-        void setup(std::function<void(T,ofThread*)> _func, T&& _param){
+        void setup(std::function<void(T*, ofThread*)> _func, T&& _param){
             this->func = _func;
             this->param = std::move(_param);
         }
         
-        void setup(std::function<void(T,ofThread*)> _func){
+        void setup(std::function<void(T*, ofThread*)> _func){
             this->func = _func;
         }
         
         void threadedFunction(){
-            this->func(this->param, this);
+            this->func(&(this->param), this);
         }
         
-        std::function<void(T,ofThread*)> func;
+        std::function<void(const T&,ofThread*)> func;
         T param;
     };
     
@@ -68,9 +68,9 @@ public:
     static int run(std::function<void()> func);
     static int run(std::function<void(ofThread*)> func);
     template<typename T>
-    static int run(std::function<void(T, ofThread*)> func);
+    static int run(std::function<void(T*, ofThread*)> func);
     template<typename T>
-    static int run(std::function<void(T, ofThread*)> func, T&& parameter);
+    static int run(std::function<void(T*, ofThread*)> func, T&& parameter);
     static void update();
     static bool exists(int thread_id);
     static bool isRunning(int thread_id);

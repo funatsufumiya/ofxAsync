@@ -23,7 +23,7 @@ int ofxAsync::run(std::function<void(ofThread*)> func){
 }
 
 template<typename T>
-int ofxAsync::run(std::function<void(T, ofThread*)> func){
+int ofxAsync::run(std::function<void(T*, ofThread*)> func){
     int runner_id = ++thread_id_max;
     auto runner = make_shared<AsyncRunnerWithArgAndParam<T>>();
     runners[runner_id] = runner;
@@ -33,7 +33,7 @@ int ofxAsync::run(std::function<void(T, ofThread*)> func){
 }
 
 template<typename T>
-int ofxAsync::run(std::function<void(T, ofThread*)> func, T&& parameter){
+int ofxAsync::run(std::function<void(T*, ofThread*)> func, T&& parameter){
     int runner_id = ++thread_id_max;
     auto runner = make_shared<AsyncRunnerWithArgAndParam<T>>();
     runners[runner_id] = runner;
