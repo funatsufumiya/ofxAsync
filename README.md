@@ -13,6 +13,12 @@ ofxAsync::run([&](){
     ofSleepMillis(5000); // (ex) a task which takes time 
     ofLog() << "done!";
 });
+
+ofLog() << "task started. waiting...";
+
+// LOG:
+// [notice ] task started. waiting...
+// [notice ] done!
 ```
 
 You can also take `ofThread*` as an arg:
