@@ -34,6 +34,14 @@ void ofxAsync::update(){
     }
 }
 
+bool ofxAsync::exists(int thread_id){
+    return runners.count(thread_id) > 0 && runners[thread_id]->isThreadRunning();
+}
+
+bool ofxAsync::isRunning(int thread_id){
+    return runners.count(thread_id) > 0 && runners[thread_id]->isThreadRunning();
+}
+
 void ofxAsync::stop(int thread_id, bool wait_until_stop){
     if(runners.count(thread_id) > 0 && runners[thread_id]->isThreadRunning()){
         auto e = runners[thread_id];
