@@ -6,22 +6,24 @@
 
 ## Usage
 
+The simplest example:
+
 ```cpp
 ofxAsync::run([&](){
     // anything you want to make parallel
 
     ofSleepMillis(5000); // (ex) a task which takes time 
-    ofLog() << "done!";
+    ofLog() << "done! after 5 sec!";
 });
 
 ofLog() << "task started.";
 
 // == logs ======
 // [notice ] task started.
-// [notice ] done!
+// [notice ] done! after 5 sec!
 ```
 
-You can also pass parameters:
+Another example with parameters:
 
 ```cpp
 for(int i=0; i<20; ++i){
@@ -44,7 +46,7 @@ for(int i=0; i<20; ++i){
 ( NOTE: about the **variable capture**, please read [this](https://en.cppreference.com/w/cpp/language/lambda) or other pages )
 
 
-You can also take `ofThread*` as an arg:
+And more, `ofThread*` can be used as an argument:
 
 ```cpp
 // Task cancelling example:
