@@ -102,3 +102,6 @@ boost::optional<shared_ptr<ofThread>> ofxAsync::getThread(int thread_id){
     }
 }
 
+void ofxAsync::setExitAction(bool wait_for_all){
+    wait_for_all_when_exit = wait_for_all;
+}

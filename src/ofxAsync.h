@@ -10,7 +10,15 @@ private:
     public:
         AsyncExit(){}
         ~AsyncExit(){
-            ofxAsync::stopAll();
+            if (wait_for_all_when_exit) {
+                try{
+                    ofxAsync::stopAll(true);
+                }catch(...){}
+            }else{
+                try{
+                    ofxAsync::stopAll(false);
+                }catch(...){}
+            }
         }
     };
     
@@ -43,6 +51,7 @@ private:
     static std::map<int, shared_ptr<ofThread> > runners;
     static AsyncExit asyncExit;
     static int thread_id_max;
+    static bool wait_for_all_when_exit = false;
     
 public:
     static int run(std::function<void()> func);
@@ -54,5 +63,6 @@ public:
     static void stopAll(bool wait_until_stop=true);
     static void waitFor(int thread_id);
     static void waitForAll();
+    static void setExitAction(bool wait_for_all=false);
     static boost::optional<shared_ptr<ofThread>> getThread(int thread_id);
 };
