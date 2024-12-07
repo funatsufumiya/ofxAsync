@@ -64,5 +64,7 @@ public:
     static void waitFor(int thread_id);
     static void waitForAll();
     static void setExitAction(bool wait_for_all=false);
-    static boost::optional<shared_ptr<ofThread>> getThread(int thread_id);
+    /// NOTE: This method can return nullptr. Take care of it.
+    /// FIXME: This is trade-off not using boost::optional<shared_ptr<ofThread>> as for compatibility issue.
+    static shared_ptr<ofThread> getThread(int thread_id);
 };

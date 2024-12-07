@@ -94,12 +94,12 @@ void ofxAsync::waitForAll(){
     }
 }
 
-boost::optional<shared_ptr<ofThread>> ofxAsync::getThread(int thread_id){
+shared_ptr<ofThread> ofxAsync::getThread(int thread_id){
     if(runners.count(thread_id) > 0 && runners[thread_id]->isThreadRunning()){
         auto e = runners[thread_id];
         return e;
     }else{
-        return boost::none;
+        return nullptr;
     }
 }
 
