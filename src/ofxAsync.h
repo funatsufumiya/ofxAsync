@@ -51,7 +51,7 @@ private:
     static std::map<int, shared_ptr<ofThread> > runners;
     static AsyncExit asyncExit;
     static int thread_id_max;
-    static bool wait_for_all_when_exit = false;
+    static bool wait_for_all_when_exit;
     
 public:
     static int run(std::function<void()> func);
