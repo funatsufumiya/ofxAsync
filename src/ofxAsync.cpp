@@ -3,7 +3,7 @@
 std::map<int, shared_ptr<ofThread> > ofxAsync::runners = {};
 ofxAsync::AsyncExit ofxAsync::asyncExit = ofxAsync::AsyncExit();
 int ofxAsync::thread_id_max = 0;
-bool ofxAsync::wait_for_all_when_exit = false;
+bool ofxAsync::wait_for_all_when_exit = true;
 
 int ofxAsync::run(std::function<void()> func){
     int runner_id = ++thread_id_max;
