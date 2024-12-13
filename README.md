@@ -1,6 +1,6 @@
 # ofxAsync
 
-- openFrameworks addon for 0.9.8 - 0.10.1
+- openFrameworks addon for 0.9.8 - 0.12.0
 - Simple ofThread wrapper for easier multi-threading.
 
 
