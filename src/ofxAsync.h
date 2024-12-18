@@ -2,8 +2,6 @@
 
 #include "ofMain.h"
 
-#include "boost/optional.hpp"
-
 class ofxAsync {
 private:
     class AsyncExit {
