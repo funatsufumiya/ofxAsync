@@ -50,11 +50,15 @@ private:
     static AsyncExit asyncExit;
     static int thread_id_max;
     static bool wait_for_all_when_exit;
+
+    static void gc();
     
 public:
     static int run(std::function<void()> func);
     static int run(std::function<void(ofThread*)> func);
-    static void update();
+    /// \deprecated No need to call this method. Just exist for compatibility.
+    /// garbage collection of threads is automatically done internally.
+    void update();
     static bool exists(int thread_id);
     static bool isRunning(int thread_id);
     static void stop(int thread_id, bool wait_until_stop=true);

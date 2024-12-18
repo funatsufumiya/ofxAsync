@@ -14,7 +14,6 @@ void ofApp::setup(){
 //--------------------------------------------------------------
 void ofApp::update(){
     ofSetWindowTitle(ofToString(ofGetFrameRate()));
-    asyncInstance.update();
 }
 
 //--------------------------------------------------------------

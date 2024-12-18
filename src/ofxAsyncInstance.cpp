@@ -18,6 +18,8 @@ ofxAsyncInstance::~ofxAsyncInstance(){
 }
 
 int ofxAsyncInstance::run(std::function<void()> func){
+    gc();
+
     int runner_id = ++thread_id_max;
     auto runner = make_shared<ofxAsyncInstance::AsyncRunner>();
     runners[runner_id] = runner;
@@ -27,6 +29,8 @@ int ofxAsyncInstance::run(std::function<void()> func){
 }
 
 int ofxAsyncInstance::run(std::function<void(ofThread*)> func){
+    gc();
+    
     int runner_id = ++thread_id_max;
     auto runner = make_shared<ofxAsyncInstance::AsyncRunnerWithArg>();
     runners[runner_id] = runner;
@@ -35,15 +39,21 @@ int ofxAsyncInstance::run(std::function<void(ofThread*)> func){
     return runner_id;
 }
 
-void ofxAsyncInstance::update(){
-    for(auto it = runners.begin(); it != runners.end(); ++it) {
-        auto& key = it->first;
-        auto e = runners[key];
-        if(!e || !e->isThreadRunning()){
-            runners.erase(key);
-            return;
+void ofxAsyncInstance::gc(){
+    auto iter = runners.begin();
+    auto endIter = runners.end();
+
+    for(; iter != endIter; ) {
+        if(!iter->second || !iter->second->isThreadRunning()){
+            iter = runners.erase(iter);
+        }else{
+            ++iter;
         }
     }
+}
+
+void ofxAsyncInstance::update(){
+    // do nothing, exists just for compatibility
 }
 
 bool ofxAsyncInstance::exists(int thread_id){
@@ -56,21 +66,24 @@ bool ofxAsyncInstance::isRunning(int thread_id){
 
 void ofxAsyncInstance::stop(int thread_id, bool wait_until_stop){
     if(runners.count(thread_id) > 0 && runners[thread_id]->isThreadRunning()){
-        auto e = runners[thread_id];
-        e->stopThread();
-        if(wait_until_stop){
-            e->waitForThread(false);
+        auto e = runners.at(thread_id);
+        if(e){
+            e->stopThread();
+            if(wait_until_stop){
+                e->waitForThread(false);
+            }
         }
     }
 
     runners.erase(thread_id);
+    gc();
 }
 
 void ofxAsyncInstance::stopAll(bool wait_until_stop){
     for(auto it = runners.begin(); it != runners.end(); ++it) {
         auto& key = it->first;
-        auto e = runners[key];
-        if(e->isThreadRunning()){
+        auto e = runners.at(key);
+        if(e && e->isThreadRunning()){
             e->stopThread();
             
             if(wait_until_stop){
@@ -84,18 +97,19 @@ void ofxAsyncInstance::stopAll(bool wait_until_stop){
 
 void ofxAsyncInstance::waitFor(int thread_id){
     if(runners.count(thread_id) > 0 && runners[thread_id]->isThreadRunning()){
-        auto e = runners[thread_id];
+        auto e = runners.at(thread_id);
         e->waitForThread(false);
     }
 
     runners.erase(thread_id);
+    gc();
 }
 
 void ofxAsyncInstance::waitForAll(){
     for(auto it = runners.begin(); it != runners.end(); ++it) {
         auto& key = it->first;
-        auto e = runners[key];
-        if(e->isThreadRunning()){
+        auto e = runners.at(key);
+        if(e && e->isThreadRunning()){
             e->waitForThread(false);
         }
     }
@@ -105,7 +119,7 @@ void ofxAsyncInstance::waitForAll(){
 
 shared_ptr<ofThread> ofxAsyncInstance::getThread(int thread_id){
     if(runners.count(thread_id) > 0 && runners[thread_id]->isThreadRunning()){
-        auto e = runners[thread_id];
+        auto e = runners.at(thread_id);
         return e;
     }else{
         return nullptr;

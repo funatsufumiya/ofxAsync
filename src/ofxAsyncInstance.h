@@ -35,12 +35,17 @@ private:
     int thread_id_max;
     bool wait_for_all_when_exit;
 
+    /// \brief Garbage collection for threads
+    void gc();
+
 public:
     ofxAsyncInstance();
     ~ofxAsyncInstance();
 
     int run(std::function<void()> func);
     int run(std::function<void(ofThread*)> func);
+    /// \deprecated No need to call this method. Just exist for compatibility.
+    /// garbage collection of threads is automatically done internally.
     void update();
     bool exists(int thread_id);
     bool isRunning(int thread_id);

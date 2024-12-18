@@ -2,35 +2,34 @@
 
 //--------------------------------------------------------------
 void ofApp::setup(){
-    ofxAsync::run([&](){
-        ofSleepMillis(500);
-        running = true;
-        ofSleepMillis(5000);
-        running = false;
-        has_finished = true;
-    });
 }
 
 //--------------------------------------------------------------
 void ofApp::update(){
-    ofSetWindowTitle(ofToString(ofGetFrameRate()));
+    int id = asyncInstance.run([](){
+        ofSleepMillis(500);
+    });
+
+    thread_ids.push_back(id);
+
+    // clear finished threads
+    for(auto it = thread_ids.begin(); it != thread_ids.end(); ++it){
+        if(!asyncInstance.exists(*it)){
+            thread_ids.erase(it);
+        }
+    }
 }
 
 //--------------------------------------------------------------
 void ofApp::draw(){
-    if(has_finished){
-        ofSetColor(255, 0, 0);
-        ofDrawRectangle(0, 0, 400, 400);
-    }else if(running){
-        ofSetColor(0, 128, 255);
-        ofDrawRectangle(0, 0, 400, 400);
-    }
+    ofDrawBitmapString("Press 'c' to stop all threads", 20, 20);
+    ofDrawBitmapString("Thread count: " + ofToString(thread_ids.size()), 20, 40);
 }
 
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key){
     if(key == 'c'){
-        ofxAsync::stopAll();
+        asyncInstance.stopAll();
     }
 }
 
