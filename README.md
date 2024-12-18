@@ -86,6 +86,8 @@ Functionally same as ofxAsync, but you can use it as an instance.
 
 This is useful when you want to manage multiple threads in a class.
 
+NOTE: `ofxAsync::stopAll()` and `ofxAsync::waitForAll()` won't affect to ofxAsyncInstance. ofxAsync and ofxAsyncInstance are completely independent.
+
 ```cpp
 // ofApp.h
 #include "ofxAsyncInstance.h"
