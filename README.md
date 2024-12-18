@@ -78,3 +78,33 @@ ofxAsync::stop(thread_id); // Cancel task after 3 seconds
 // [notice ] processing 3 / 10
 // [notice ] task cancelled
 ```
+
+## ofxAsyncInstance
+
+This is instance-based version of ofxAsync.
+Functionally same as ofxAsync, but you can use it as an instance.
+
+This is useful when you want to manage multiple threads in a class.
+
+```cpp
+// ofApp.h
+#include "ofxAsyncInstance.h"
+
+class ofApp : public ofBaseApp{
+    // ....
+    ofxAsyncInstance asyncInstance;
+}
+
+// ofApp.cpp
+void ofApp::setup(){
+    asyncInstance.run([](){
+        ofLog() << "thread 1";
+    });
+
+    asyncInstance.run([](){
+        ofLog() << "thread 2";
+    });
+
+    asyncInstance.waitForAll();
+}
+```

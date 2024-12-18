@@ -1,29 +1,41 @@
-#include "ofxAsync.h"
+#include "ofxAsyncInstance.h"
 
-std::map<int, shared_ptr<ofThread> > ofxAsync::runners = {};
-ofxAsync::AsyncExit ofxAsync::asyncExit = ofxAsync::AsyncExit();
-int ofxAsync::thread_id_max = 0;
-bool ofxAsync::wait_for_all_when_exit = true;
+ofxAsyncInstance::ofxAsyncInstance(){
+    thread_id_max = 0;
+    wait_for_all_when_exit = true;
+}
 
-int ofxAsync::run(std::function<void()> func){
+ofxAsyncInstance::~ofxAsyncInstance(){
+    if (wait_for_all_when_exit) {
+        try{
+            stopAll(true);
+        }catch(...){}
+    }else{
+        try{
+            stopAll(false);
+        }catch(...){}
+    }
+}
+
+int ofxAsyncInstance::run(std::function<void()> func){
     int runner_id = ++thread_id_max;
-    auto runner = make_shared<ofxAsync::AsyncRunner>();
+    auto runner = make_shared<ofxAsyncInstance::AsyncRunner>();
     runners[runner_id] = runner;
     runner->setup(func);
     runner->startThread();
     return runner_id;
 }
 
-int ofxAsync::run(std::function<void(ofThread*)> func){
+int ofxAsyncInstance::run(std::function<void(ofThread*)> func){
     int runner_id = ++thread_id_max;
-    auto runner = make_shared<ofxAsync::AsyncRunnerWithArg>();
+    auto runner = make_shared<ofxAsyncInstance::AsyncRunnerWithArg>();
     runners[runner_id] = runner;
     runner->setup(func);
     runner->startThread();
     return runner_id;
 }
 
-void ofxAsync::update(){
+void ofxAsyncInstance::update(){
     for(auto it = runners.begin(); it != runners.end(); ++it) {
         auto& key = it->first;
         auto e = runners[key];
@@ -34,15 +46,15 @@ void ofxAsync::update(){
     }
 }
 
-bool ofxAsync::exists(int thread_id){
+bool ofxAsyncInstance::exists(int thread_id){
     return runners.count(thread_id) > 0 && runners[thread_id]->isThreadRunning();
 }
 
-bool ofxAsync::isRunning(int thread_id){
+bool ofxAsyncInstance::isRunning(int thread_id){
     return runners.count(thread_id) > 0 && runners[thread_id]->isThreadRunning();
 }
 
-void ofxAsync::stop(int thread_id, bool wait_until_stop){
+void ofxAsyncInstance::stop(int thread_id, bool wait_until_stop){
     if(runners.count(thread_id) > 0 && runners[thread_id]->isThreadRunning()){
         auto e = runners[thread_id];
         e->stopThread();
@@ -54,7 +66,7 @@ void ofxAsync::stop(int thread_id, bool wait_until_stop){
     runners.erase(thread_id);
 }
 
-void ofxAsync::stopAll(bool wait_until_stop){
+void ofxAsyncInstance::stopAll(bool wait_until_stop){
     for(auto it = runners.begin(); it != runners.end(); ++it) {
         auto& key = it->first;
         auto e = runners[key];
@@ -66,11 +78,11 @@ void ofxAsync::stopAll(bool wait_until_stop){
             }
         }
     }
-
+    
     runners.clear();
 }
 
-void ofxAsync::waitFor(int thread_id){
+void ofxAsyncInstance::waitFor(int thread_id){
     if(runners.count(thread_id) > 0 && runners[thread_id]->isThreadRunning()){
         auto e = runners[thread_id];
         e->waitForThread(false);
@@ -79,7 +91,7 @@ void ofxAsync::waitFor(int thread_id){
     runners.erase(thread_id);
 }
 
-void ofxAsync::waitForAll(){
+void ofxAsyncInstance::waitForAll(){
     for(auto it = runners.begin(); it != runners.end(); ++it) {
         auto& key = it->first;
         auto e = runners[key];
@@ -91,7 +103,7 @@ void ofxAsync::waitForAll(){
     runners.clear();
 }
 
-shared_ptr<ofThread> ofxAsync::getThread(int thread_id){
+shared_ptr<ofThread> ofxAsyncInstance::getThread(int thread_id){
     if(runners.count(thread_id) > 0 && runners[thread_id]->isThreadRunning()){
         auto e = runners[thread_id];
         return e;
@@ -100,6 +112,6 @@ shared_ptr<ofThread> ofxAsync::getThread(int thread_id){
     }
 }
 
-void ofxAsync::setExitAction(bool wait_for_all){
+void ofxAsyncInstance::setExitAction(bool wait_for_all){
     wait_for_all_when_exit = wait_for_all;
 }
