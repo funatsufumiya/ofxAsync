@@ -3,6 +3,13 @@
 - openFrameworks addon for 0.9.8 - 0.12.0
 - Simple ofThread wrapper for easier multi-threading.
 
+## Note: vs ofxTaskRunner
+
+You should also consider [ofxTaskRunner](https://github.com/funatsufumiya/ofxTaskRunner) instead of ofxAsync.
+
+`ofxTaskRunner` provides chainable methods which describes time-driven actions. `ofxAsync` provides simple thread wrapper instead.
+
+`ofxTaskRunner` runs on single thread, so you can use normal GL functions with asynchronous style. `ofxAsync` triggers real multi-thread, so it is useful hard time-taken tasks.
 
 ## Usage
 
