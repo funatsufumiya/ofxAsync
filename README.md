@@ -2,6 +2,7 @@
 
 - openFrameworks addon for 0.9.8 - 0.12.0
 - Simple ofThread wrapper for easier multi-threading.
+    - **Please that this is not real concurrent library like [asyncio](https://github.com/netcan/asyncio). Just thread wrapper.**
 
 ## Note: vs ofxTaskRunner
 
