@@ -2,15 +2,14 @@
 
 - openFrameworks addon for 0.9.8 - 0.12.0
 - Simple ofThread wrapper for easier multi-threading.
-    - **Please that this is not real concurrent library like [asyncio](https://github.com/netcan/asyncio). Just thread wrapper.**
+    - **Please that this is not real concurrent / asynchronous library like [asyncio](https://github.com/netcan/asyncio). Just thread wrapper.**
+    - If you need real concurrent / asynchronous library, you should consider [ofxTaskRunner](https://github.com/funatsufumiya/ofxTaskRunner) instead.
 
-## Note: vs ofxTaskRunner
+## Comparison to [ofxTaskRunner](https://github.com/funatsufumiya/ofxTaskRunner)
 
-You should also consider [ofxTaskRunner](https://github.com/funatsufumiya/ofxTaskRunner) instead of ofxAsync.
+`ofxTaskRunner` provides chainable methods which describes time-driven actions, while `ofxAsync` only provides simple thread wrapper.
 
-`ofxTaskRunner` provides chainable methods which describes time-driven actions. `ofxAsync` provides simple thread wrapper instead.
-
-`ofxTaskRunner` runs on single thread, so you can use normal GL functions with asynchronous style. `ofxAsync` triggers real multi-thread, so it is useful hard time-taken tasks.
+`ofxTaskRunner` runs on single (main) thread, so you can use normal GL functions with asynchronous style. `ofxAsync` triggers real multi-thread, so it is useful hard time-taken tasks.
 
 ## Usage
 
